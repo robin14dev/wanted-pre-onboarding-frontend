@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-const Container = styled.div`
+export const Container = styled.div`
   width: 20rem;
   border-radius: 1rem;
   padding: 1rem;
@@ -52,7 +52,7 @@ const Container = styled.div`
       }
     }
   }
-  .login {
+  .bottom {
     display: flex;
     font-size: 0.9rem;
     button {
@@ -63,8 +63,20 @@ const Container = styled.div`
   }
 `;
 
-const validate = (type, value) => {
-  return validRgx[type].test(value) ? true : false;
+export const validate = (type, value) => {
+  return validInfo.rgx[type].test(value) ? true : false;
+};
+
+export const validInfo = {
+  rgx: {
+    email: /^.*(@).*/,
+    password: /^.{8,}$/,
+  },
+
+  message: {
+    email: "이메일은 @을 포함해야 합니다",
+    password: "비밀번호는 8자 이상이어야 합니다",
+  },
 };
 
 const validRgx = {
@@ -126,7 +138,7 @@ const Signup = () => {
       console.log(result);
       if (result.status === 201 && result.statusText === "Created") {
         console.log("here");
-        navigate("/login");
+        navigate("/signin");
       }
     } catch (error) {
       console.log(error);
@@ -148,6 +160,13 @@ Assignment 2
 
   
   */
+
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      console.log("here");
+      navigate("/todo");
+    }
+  }, []);
 
   const { email, password } = userInfo;
 
@@ -184,9 +203,9 @@ Assignment 2
           회원가입
         </button>
       </form>
-      <div className="login">
+      <div className="bottom">
         <p>이미 계정이 있으신가요?</p>
-        <button data-testid="signin-button" onClick={() => navigate("/login")}>
+        <button data-testid="signin-button" onClick={() => navigate("/signin")}>
           로그인
         </button>
       </div>
