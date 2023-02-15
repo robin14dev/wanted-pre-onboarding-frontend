@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Item from "./Item";
@@ -36,8 +36,6 @@ const Container = styled.div`
   }
 
   .todo-list {
-    /* background-color: aqua; */
-
     ul {
       width: 100%;
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 const Container = styled.div`
@@ -8,7 +8,6 @@ const Container = styled.div`
   height: 4rem;
   border-bottom: 1px solid lightgray;
   background-color: white;
-  /* position: relative; */
 
   .logo {
     display: flex;
@@ -25,10 +24,6 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    /* position: absolute; */
-    /* right: 5rem; */
-    /* background-color: yellow; */
-    /* width: 5rem; */
     height: 100%;
 
     button {
@@ -48,22 +43,13 @@ const Container = styled.div`
   }
 `;
 
-const Dropdown = styled.div`
-  background-color: yellowgreen;
-  position: absolute;
-`;
 const Header = () => {
-  const [isDrop, setIsDrop] = useState(false);
   const navigate = useNavigate();
   const logout = () => {
     localStorage.removeItem("access_token");
     navigate("/signin");
   };
-  /*
-  로그인이 되있다면 로그아웃만
-  로그인이 되어있지 않다면, 회원가입,
-  
-  */
+
   return (
     <Container>
       <div className="logo" onClick={() => navigate("/")}>

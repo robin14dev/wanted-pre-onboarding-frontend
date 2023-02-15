@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const List = styled.li`
   padding: 0.8rem 0.5rem;
@@ -28,9 +28,7 @@ const List = styled.li`
     input {
       margin-left: 0.5rem;
       color: ${(props) => (props.isEdit ? "white" : "black")};
-
       cursor: pointer;
-      /* flex: 1; */
     }
 
     p {
@@ -173,12 +171,7 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
   }, [isEdit]);
 
   return (
-    <List
-      isEdit={isEdit}
-      isCompleted={modifiedTodo.isCompleted}
-      key={todo.id}
-      // onClick={(e) => toggleTodo(e, todo.id)}
-    >
+    <List isEdit={isEdit} isCompleted={modifiedTodo.isCompleted} key={todo.id}>
       {isEdit ? (
         <>
           <form onSubmit={(e) => onSubmitHandler(e, todo.id)}>
@@ -208,8 +201,7 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
               </button>
               <button
                 data-testid="cancel-button"
-                onClick={(e) => {
-                  // e.stopPropagation();
+                onClick={() => {
                   setIsEdit(!isEdit);
                   setModifiedTodo(todo);
                 }}

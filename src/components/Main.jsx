@@ -12,15 +12,11 @@ const Container = styled.div`
   background-color: #ebe4f9;
   margin: 0 auto;
   padding: 0 10rem;
-  /* height: 50vh; */
-  /* margin-top: 5rem; */
+
   max-width: 1060px;
   .left {
     width: 40%;
-    /* background-color: antiquewhite; */
     display: flex;
-    /* justify-content: center;
-    align-items: center; */
     align-items: center;
   }
 

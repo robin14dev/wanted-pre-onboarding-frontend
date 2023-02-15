@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { validate, validInfo } from "../util/validation";
 export const Container = styled.div`
   width: 20rem;
   height: 23rem;
@@ -67,33 +68,13 @@ export const Container = styled.div`
   }
 `;
 
-export const validate = (type, value) => {
-  return validInfo.rgx[type].test(value) ? true : false;
-};
-
-export const validInfo = {
-  rgx: {
-    email: /^.*(@).*/,
-    password: /^.{8,}$/,
-  },
-
-  message: {
-    email: "이메일은 @을 포함해야 합니다",
-    password: "비밀번호는 8자 이상이어야 합니다",
-  },
-};
-
-const validMsg = {
-  email: "이메일은 @을 포함해야 합니다",
-  password: "비밀번호는 8자 이상이어야 합니다",
-};
-
 const Signup = () => {
   const [userInfo, setUserInfo] = useState({
     email: { text: "", isValid: false },
     password: { text: "", isValid: false },
   });
   const [alert, setAlert] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   const onChangeHandler = (e) => {
     const type = e.target.dataset.testid.split("-")[0];
@@ -108,20 +89,16 @@ const Signup = () => {
 
     const isValid = validate(type, value);
 
-    setUserInfo((prevInfo) => {
-      const nextInfo = { ...prevInfo, [type]: { ...prevInfo[type], isValid } };
-      return nextInfo;
-    });
+    setUserInfo((prevInfo) => ({
+      ...prevInfo,
+      [type]: { ...prevInfo[type], isValid },
+    }));
     if (isValid) {
-      console.log("here");
       setAlert((prev) => ({ ...prev, [type]: "" }));
     } else {
-      console.log("false");
-
       setAlert((prev) => ({ ...prev, [type]: validInfo.message[type] }));
     }
   };
-  const navigate = useNavigate();
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
@@ -154,7 +131,6 @@ const Signup = () => {
   return (
     <Container>
       <div className="header">
-        {/* <img alt="logo"></img> */}
         <h1>pre-onboarding</h1>
       </div>
       <form onSubmit={onSubmitHandler}>

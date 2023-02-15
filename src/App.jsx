@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Signin from "./components/Signin";
@@ -7,7 +6,6 @@ import Todo from "./components/Todo";
 import Header from "./components/Header";
 import Main from "./components/Main";
 function App() {
-  const [userInfo, setUserInfo] = useState({ userId: null });
   return (
     <BrowserRouter>
       <div className="App">
