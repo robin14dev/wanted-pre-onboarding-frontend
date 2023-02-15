@@ -4,19 +4,23 @@ import "./App.css";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
 import Todo from "./components/Todo";
-
+import Header from "./components/Header";
+import Main from "./components/Main";
 function App() {
   const [userInfo, setUserInfo] = useState({ userId: null });
   return (
-    <div className="App">
-      <BrowserRouter>
+    <BrowserRouter>
+      <div className="App">
+        <Header />
+
         <Routes>
+          <Route path="/" element={<Main />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="todo" element={<Todo />} />
+          <Route path="/todo" element={<Todo />} />
         </Routes>
-      </BrowserRouter>
-    </div>
+      </div>
+    </BrowserRouter>
   );
 }
 

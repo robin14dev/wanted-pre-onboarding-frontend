@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 export const Container = styled.div`
   width: 20rem;
+  height: 23rem;
+  padding: 3rem 1rem;
   border-radius: 1rem;
-  padding: 1rem;
   margin: 0 auto;
   margin-top: 5rem;
   background-color: white;
@@ -19,6 +20,7 @@ export const Container = styled.div`
     h1 {
       color: #9343e1;
     }
+    margin-bottom: 2rem;
   }
   form {
     width: 90%;
@@ -41,6 +43,7 @@ export const Container = styled.div`
 
     button {
       transition: background-color 0.5s;
+      margin-top: 1rem;
       width: 100%;
       background-color: #9343e1;
       color: white;
@@ -55,6 +58,7 @@ export const Container = styled.div`
   .bottom {
     display: flex;
     font-size: 0.9rem;
+    margin-top: 2rem;
     button {
       margin-left: 1rem;
       font-weight: 600;
@@ -77,11 +81,6 @@ export const validInfo = {
     email: "이메일은 @을 포함해야 합니다",
     password: "비밀번호는 8자 이상이어야 합니다",
   },
-};
-
-const validRgx = {
-  email: /^.*(@).*/,
-  password: /^.{8,}$/,
 };
 
 const validMsg = {
@@ -119,7 +118,7 @@ const Signup = () => {
     } else {
       console.log("false");
 
-      setAlert((prev) => ({ ...prev, [type]: validMsg[type] }));
+      setAlert((prev) => ({ ...prev, [type]: validInfo.message[type] }));
     }
   };
   const navigate = useNavigate();
@@ -137,33 +136,15 @@ const Signup = () => {
       );
       console.log(result);
       if (result.status === 201 && result.statusText === "Created") {
-        console.log("here");
         navigate("/signin");
       }
     } catch (error) {
       console.log(error);
     }
   };
-  /*
-  Assignment 1
-회원가입과 로그인 페이지에 이메일과 비밀번호의 유효성 검사기능을 구현해주세요
-
-이메일 조건: @ 포함
-비밀번호 조건: 8자 이상
-이메일과 비밀번호의 유효성 검사 조건은 별도의 추가 조건 부여 없이 위의 조건대로만 진행해주세요 (e.g. 비밀번호 유효성 검사에 특수문자 포함 등의 새로운 조건을 추가하는 행위를 지양해주세요)
-입력된 이메일과 비밀번호가 유효성 검사를 통과하지 못한다면 button에 disabled 속성을 부여해주세요
-
-보안 상 실제 사용하고 계신 이메일과 패스워드말고 테스트용 이메일, 패스워드 사용을 권장드립니다.
-
-Assignment 2
-회원가입 페이지에서 버튼을 클릭 시 회원가입을 진행하고 회원가입이 정상적으로 완료되었을 시 /signin 경로로 이동해주세요
-
-  
-  */
 
   useEffect(() => {
     if (localStorage.getItem("access_token")) {
-      console.log("here");
       navigate("/todo");
     }
   }, []);
