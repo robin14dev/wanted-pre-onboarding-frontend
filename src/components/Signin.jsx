@@ -54,7 +54,6 @@ const Signin = ({ setServerFail }) => {
         navigate("/todo");
       }
     } catch (error) {
-      console.log(error);
       let serverMsg;
       if (error.message === "Network Error" && error.name === "AxiosError") {
         setServerFail(true);

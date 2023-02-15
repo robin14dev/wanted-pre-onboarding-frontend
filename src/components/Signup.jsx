@@ -169,7 +169,6 @@ const Signup = ({ setServerFail }) => {
           [type]: serverMsg,
         }));
       }
-      console.log(error);
     } finally {
       setIsLoading(false);
     }

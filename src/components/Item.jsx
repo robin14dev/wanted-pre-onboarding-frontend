@@ -124,7 +124,6 @@ const Item = ({ todo, setTodos, setServerFail }) => {
         setIsEdit(false);
       }
     } catch (error) {
-      console.log(error);
       if (error.message === "Network Error" && error.name === "AxiosError") {
         setServerFail(true);
       }
@@ -136,7 +135,6 @@ const Item = ({ todo, setTodos, setServerFail }) => {
   const toggleTodo = async (id) => {
     try {
       setIsLoading(true);
-      console.log(modifiedTodo);
       const result = await axios.put(
         `${process.env.REACT_APP_WAS}/todos/${id}`,
         {
@@ -161,7 +159,6 @@ const Item = ({ todo, setTodos, setServerFail }) => {
         setIsEdit(false);
       }
     } catch (error) {
-      console.log(error);
       if (error.message === "Network Error" && error.name === "AxiosError") {
         setServerFail(true);
       }
@@ -189,7 +186,6 @@ const Item = ({ todo, setTodos, setServerFail }) => {
         });
       }
     } catch (error) {
-      console.log(error);
       if (error.message === "Network Error" && error.name === "AxiosError") {
         setServerFail(true);
       }

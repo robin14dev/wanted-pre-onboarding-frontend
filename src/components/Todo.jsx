@@ -118,9 +118,7 @@ const Todo = ({ setServerFail }) => {
         setTodos(data);
       }
     } catch (error) {
-      console.log(error);
       if (error.message === "Network Error" && error.name === "AxiosError") {
-        /* //! 실패했을 때 알려주는거 어떻게?? */
         setServerFail(true);
       }
     } finally {
@@ -153,16 +151,13 @@ const Todo = ({ setServerFail }) => {
       newTodo.current = "";
       newTodoInputRef.current.value = "";
     } catch (error) {
-      console.log(error);
       if (error.message === "Network Error" && error.name === "AxiosError") {
-        /* //! 실패했을 때 알려주는거 어떻게?? */
         setServerFail(true);
       }
     } finally {
       setIsLoading((prevLoading) => ({ ...prevLoading, createTodo: false }));
       setTimeout(() => {
         if (newTodoInputRef.current) {
-          console.log("here", newTodoInputRef.current);
           newTodoInputRef.current.focus();
         }
       }, 0);
@@ -171,14 +166,7 @@ const Todo = ({ setServerFail }) => {
 
   const onChangeHandler = (e) => {
     newTodo.current = e.target.value;
-    console.log(newTodo);
-    console.log(newTodo.current === null);
-    console.log(newTodo.current.length === 0);
   };
-
-  /* 
-  서버와의 에러가 발생한다면 모달로 에러를 알려주기??
-  */
 
   return (
     <Container>
