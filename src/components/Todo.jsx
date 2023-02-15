@@ -44,7 +44,6 @@ const Container = styled.div`
 
 const Todo = () => {
   console.log("todo");
-  // const [newTodo, setNewTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const newTodoInputRef = useRef(null);
   const navigate = useNavigate();
@@ -93,39 +92,22 @@ const Todo = () => {
         }
       );
 
-      // const nextId = id.current + 1;
-      // setTodos((prevTodos) => [
-      //   ...prevTodos,
-      //   { content: newTodo, id: nextId, isCompleted: false },
-      // ]);
-      console.log(result);
       const { status, statusText, data } = result;
       if (status === 201 && statusText === "Created") {
         setTodos((prevTodos) => [...prevTodos, data]);
       }
-      // setNewTodo("");
+
       newTodo.current = "";
       newTodoInputRef.current.value = "";
       newTodoInputRef.current.focus();
-      // id.current++;
     } catch (error) {
       console.log(error);
     }
   };
 
   const onChangeHandler = (e) => {
-    console.log("hhh");
-    // setNewTodo(e.target.value);
     newTodo.current = e.target.value;
   };
-
-  // const toggleTodo = (id) => {
-  //   setTodos((prevTodos) => {
-  //     return prevTodos.map((todo) =>
-  //       todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
-  //     );
-  //   });
-  // };
 
   const deleteTodo = async (id) => {
     try {
@@ -153,6 +135,7 @@ const Todo = () => {
     <Container>
       <form onSubmit={createTodo}>
         <input
+          spellCheck="false"
           ref={newTodoInputRef}
           onChange={onChangeHandler}
           data-testid="new-todo-input"

@@ -76,14 +76,10 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
   const inputRef = useRef(null);
 
   const onChangeHandler = (e) => {
-    console.log(e);
-    console.log("edit!!");
     e.stopPropagation();
     const type = e.target.type;
     const value = e.target.value;
     if (type === "checkbox") {
-      console.log("here");
-      console.log(modifiedTodo);
       setModifiedTodo((prevTodo) => ({
         ...prevTodo,
         isCompleted: !prevTodo.isCompleted,
@@ -94,12 +90,10 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
         todo: value,
       }));
     }
-    console.log(modifiedTodo);
   };
   const onSubmitHandler = async (e, id) => {
     e.stopPropagation();
     e.preventDefault();
-    console.log("reerr");
     try {
       const result = await axios.put(
         `${process.env.REACT_APP_WAS}/todos/${id}`,
@@ -114,7 +108,6 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
           },
         }
       );
-      console.log(result);
       const { status, statusText, data } = result;
       if (status === 200 && statusText === "OK") {
         setModifiedTodo(data);
@@ -131,7 +124,6 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
   };
 
   const toggleTodo = async (id) => {
-    // e.stopPropagation();
     try {
       console.log(modifiedTodo);
       const result = await axios.put(
@@ -147,7 +139,6 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
           },
         }
       );
-      console.log(result);
       const { status, statusText, data } = result;
       if (status === 200 && statusText === "OK") {
         setModifiedTodo(data);
@@ -165,7 +156,6 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
 
   useEffect(() => {
     if (inputRef.current) {
-      console.log(inputRef.current);
       inputRef.current.focus();
     }
   }, [isEdit]);
@@ -177,6 +167,7 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
           <form onSubmit={(e) => onSubmitHandler(e, todo.id)}>
             <>
               <input
+                spellCheck="false"
                 type="checkbox"
                 onChange={(e) => {
                   e.stopPropagation();

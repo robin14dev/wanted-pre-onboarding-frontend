@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container as C } from "./Signup";
@@ -10,7 +10,7 @@ const Signin = () => {
   const [userInfo, setUserInfo] = useState({ email: "", password: "" });
   const [alert, setAlert] = useState({ email: "", password: "" });
   const { email, password } = userInfo;
-
+  const inputRef = useRef(null);
   const navigate = useNavigate();
 
   const onChangeHandler = (e) => {
@@ -61,6 +61,10 @@ const Signin = () => {
     if (localStorage.getItem("access_token")) {
       navigate("/todo");
     }
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }, []);
 
   return (
@@ -70,6 +74,8 @@ const Signin = () => {
       </div>
       <form onSubmit={onSubmitHandler}>
         <input
+          spellCheck="false"
+          ref={inputRef}
           type="text"
           required
           data-testid="email-input"
