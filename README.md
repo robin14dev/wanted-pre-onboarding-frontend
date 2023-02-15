@@ -1,5 +1,3 @@
-# wanted-pre-onboarding-frontend
-
 # 배포 링크
 
 - http://wanted-pre-onboarding-frontend-robin14dev.s3-website.ap-northeast-2.amazonaws.com/
