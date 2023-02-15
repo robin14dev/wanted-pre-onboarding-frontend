@@ -24,3 +24,4 @@
 - axios
 - styled-component
 - react-router-dom
+- react-icons
