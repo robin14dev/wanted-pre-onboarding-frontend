@@ -2,7 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Container as C, validate, validInfo } from "./Signup";
+import { Container as C } from "./Signup";
+import { validate, validInfo } from "../util/validation";
 
 const Container = styled(C)``;
 const Signin = () => {
@@ -28,16 +29,11 @@ const Signin = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    /*
-    유효성 검사 실패시 알려주기 
-    */
-
     try {
       let isfullfilled = true;
       for (const type in userInfo) {
         if (validate(type, userInfo[type]) === false) {
           if (isfullfilled) isfullfilled = false;
-          /* 일단 배열 다 돌고나서 해야되는디? */
           setAlert((prevAlert) => ({
             ...prevAlert,
             [type]: validInfo.message[type],
@@ -52,9 +48,7 @@ const Signin = () => {
         { headers: { "Content-Type": "application/json" } }
       );
       const { status, statusText, data } = result;
-      console.log(result);
       if (status === 200 && statusText === "OK") {
-        console.log(data);
         localStorage.setItem("access_token", data["access_token"]);
         navigate("/todo");
       }
@@ -65,7 +59,6 @@ const Signin = () => {
 
   useEffect(() => {
     if (localStorage.getItem("access_token")) {
-      console.log("here");
       navigate("/todo");
     }
   }, []);
