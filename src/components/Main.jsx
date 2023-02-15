@@ -4,6 +4,7 @@ import styled from "styled-components";
 const PreContainer = styled.div`
   background-color: #ebe4f9;
   padding: 5rem 0;
+  margin-top: 8rem;
 `;
 
 const Container = styled.div`
@@ -31,11 +32,11 @@ const Main = () => {
     <PreContainer>
       <Container>
         <div className="left">
-          <p>
+          <div>
             <h2>wanted</h2>
             <h1>Pre Onboarding</h1>
             <h1>Internship</h1>
-          </p>
+          </div>
         </div>
         <img
           alt="프리온보딩로고"

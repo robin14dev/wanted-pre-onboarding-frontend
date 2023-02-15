@@ -29,30 +29,74 @@ const Container = styled.div`
       background-color: #9343e1;
       color: white;
     }
-
-    & + .todo-list {
-      margin-top: 1rem;
-    }
   }
 
   .todo-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    .empty {
+      color: gray;
+    }
     ul {
       width: 100%;
+    }
+    & > div {
+      position: relative;
+    }
+  }
+
+  .loading {
+    position: relative;
+    span {
+      visibility: hidden;
+      opacity: 0.5;
+      transition: all 0.2s;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 4px solid #9343e1;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: button-loading-spinner 1s ease infinite;
+    }
+
+    @keyframes button-loading-spinner {
+      from {
+        transform: rotate(0turn);
+      }
+
+      to {
+        transform: rotate(1turn);
+      }
     }
   }
 `;
 
-const Todo = () => {
-  console.log("todo");
+const Todo = ({ setServerFail }) => {
   const [todos, setTodos] = useState([]);
   const newTodoInputRef = useRef(null);
   const navigate = useNavigate();
-  const newTodo = useRef();
+  const newTodo = useRef(null);
+  const [isLoading, setIsLoading] = useState({
+    getTodos: false,
+    createTodo: false,
+  });
 
   useEffect(() => {
-    console.log("useEffect");
     if (!localStorage.getItem("access_token")) {
-      console.log("here");
       navigate("/signin");
       return;
     }
@@ -63,6 +107,7 @@ const Todo = () => {
 
   const getTodos = async () => {
     try {
+      setIsLoading((prevLoading) => ({ ...prevLoading, getTodos: true }));
       const result = await axios.get(`${process.env.REACT_APP_WAS}/todos`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -74,11 +119,19 @@ const Todo = () => {
       }
     } catch (error) {
       console.log(error);
+      if (error.message === "Network Error" && error.name === "AxiosError") {
+        /* //! 실패했을 때 알려주는거 어떻게?? */
+        setServerFail(true);
+      }
+    } finally {
+      setIsLoading((prevLoading) => ({ ...prevLoading, getTodos: false }));
     }
   };
   const createTodo = async (e) => {
     e.preventDefault();
+    if (newTodoInputRef.current.value.length === 0) return;
     try {
+      setIsLoading((prevLoading) => ({ ...prevLoading, createTodo: true }));
       const result = await axios.post(
         `${process.env.REACT_APP_WAS}/todos`,
         {
@@ -99,37 +152,33 @@ const Todo = () => {
 
       newTodo.current = "";
       newTodoInputRef.current.value = "";
-      newTodoInputRef.current.focus();
     } catch (error) {
       console.log(error);
+      if (error.message === "Network Error" && error.name === "AxiosError") {
+        /* //! 실패했을 때 알려주는거 어떻게?? */
+        setServerFail(true);
+      }
+    } finally {
+      setIsLoading((prevLoading) => ({ ...prevLoading, createTodo: false }));
+      setTimeout(() => {
+        if (newTodoInputRef.current) {
+          console.log("here", newTodoInputRef.current);
+          newTodoInputRef.current.focus();
+        }
+      }, 0);
     }
   };
 
   const onChangeHandler = (e) => {
     newTodo.current = e.target.value;
+    console.log(newTodo);
+    console.log(newTodo.current === null);
+    console.log(newTodo.current.length === 0);
   };
 
-  const deleteTodo = async (id) => {
-    try {
-      const result = await axios.delete(
-        `${process.env.REACT_APP_WAS}/todos/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
-
-      const { status, statusText } = result;
-      if (status === 204 && statusText === "No Content") {
-        setTodos((prevTodos) => {
-          return prevTodos.filter((todo) => todo.id !== id);
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  /* 
+  서버와의 에러가 발생한다면 모달로 에러를 알려주기??
+  */
 
   return (
     <Container>
@@ -141,20 +190,33 @@ const Todo = () => {
           data-testid="new-todo-input"
           type="text"
           placeholder="할일을 입력해 주세요"
-        ></input>
-        <button data-testid="new-todo-add-button" type="submit">
-          추가
+          disabled={isLoading.createTodo}
+        />
+        <button
+          data-testid="new-todo-add-button"
+          type="submit"
+          className={isLoading.createTodo ? "loading" : undefined}
+        >
+          <span>추가</span>
         </button>
       </form>
 
       <div className="todo-list">
-        {todos.length > 0 && (
+        {isLoading.getTodos && todos.length === 0 && (
+          <div className={isLoading.getTodos ? "loading" : undefined}>
+            <span></span>
+          </div>
+        )}
+        {!isLoading.getTodos && todos.length === 0 && (
+          <p className="empty">할일 목록이 비어있습니다</p>
+        )}
+        {!isLoading.getTodos && todos.length > 0 && (
           <ul>
             {todos.map((todo) => (
               <Item
+                setServerFail={setServerFail}
                 key={todo.id}
                 todo={todo}
-                deleteTodo={deleteTodo}
                 setTodos={setTodos}
               />
             ))}
