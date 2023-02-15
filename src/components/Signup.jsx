@@ -10,7 +10,7 @@ export const Container = styled.div`
   border-radius: 1rem;
   margin: 0 auto;
   margin-top: 5rem;
-  background-color: white;
+  background-color: transparent;
   box-shadow: 1px 1px 0.5rem lightgray;
   display: flex;
   flex-flow: column;
@@ -54,6 +54,40 @@ export const Container = styled.div`
       &:disabled {
         background-color: #9243e1aa;
       }
+      position: relative;
+    }
+    .loading {
+      span {
+        visibility: hidden;
+        opacity: 0.5;
+        transition: all 0.2s;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        border: 4px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: button-loading-spinner 1s ease infinite;
+      }
+
+      @keyframes button-loading-spinner {
+        from {
+          transform: rotate(0turn);
+        }
+
+        to {
+          transform: rotate(1turn);
+        }
+      }
     }
   }
   .bottom {
@@ -68,7 +102,7 @@ export const Container = styled.div`
   }
 `;
 
-const Signup = () => {
+const Signup = ({ setServerFail }) => {
   const [userInfo, setUserInfo] = useState({
     email: { text: "", isValid: false },
     password: { text: "", isValid: false },
@@ -76,6 +110,7 @@ const Signup = () => {
   const [alert, setAlert] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const inputRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onChangeHandler = (e) => {
     const type = e.target.dataset.testid.split("-")[0];
@@ -104,6 +139,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
       const result = await axios.post(
         `${process.env.REACT_APP_WAS}/auth/signup`,
         {
@@ -112,12 +148,30 @@ const Signup = () => {
         },
         { headers: { "Content-Type": "application/json" } }
       );
-      console.log(result);
       if (result.status === 201 && result.statusText === "Created") {
         navigate("/signin");
       }
     } catch (error) {
+      if (error.message === "Network Error" && error.name === "AxiosError") {
+        setServerFail(true);
+      }
+      if (
+        error.message === "Request failed with status code 400" &&
+        error.name === "AxiosError" &&
+        error.response.data.message === "동일한 이메일이 이미 존재합니다."
+      ) {
+        // 동일한 계정이 있는 경우
+        const type = "email";
+        const serverMsg = error.response.data.message;
+
+        setAlert((prevAlert) => ({
+          ...prevAlert,
+          [type]: serverMsg,
+        }));
+      }
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -161,11 +215,12 @@ const Signup = () => {
         ></input>
         <div className="valid-msg">{password.text && alert.password}</div>
         <button
+          className={isLoading ? "loading" : undefined}
           type="submit"
           data-testid="signup-button"
           disabled={!email.isValid || !password.isValid}
         >
-          회원가입
+          <span>회원가입</span>
         </button>
       </form>
       <div className="bottom">

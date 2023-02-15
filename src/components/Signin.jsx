@@ -6,9 +6,10 @@ import { Container as C } from "./Signup";
 import { validate, validInfo } from "../util/validation";
 
 const Container = styled(C)``;
-const Signin = () => {
+const Signin = ({ setServerFail }) => {
   const [userInfo, setUserInfo] = useState({ email: "", password: "" });
   const [alert, setAlert] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
   const { email, password } = userInfo;
   const inputRef = useRef(null);
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const Signin = () => {
         }
       }
       if (isfullfilled === false) return;
-
+      setIsLoading(true);
       const result = await axios.post(
         `${process.env.REACT_APP_WAS}/auth/signin`,
         { email, password },
@@ -54,6 +55,39 @@ const Signin = () => {
       }
     } catch (error) {
       console.log(error);
+      let serverMsg;
+      if (error.message === "Network Error" && error.name === "AxiosError") {
+        setServerFail(true);
+      }
+      if (
+        error.message === "Request failed with status code 404" &&
+        error.name === "AxiosError" &&
+        error.response.data.error === "Not Found"
+      ) {
+        const type = "email";
+        serverMsg =
+          error.response.data.message || "해당 사용자가 존재하지 않습니다.";
+        //계정이 없는경우
+        setAlert((prevAlert) => ({
+          ...prevAlert,
+          [type]: serverMsg,
+        }));
+      }
+      if (
+        error.message === "Request failed with status code 401" &&
+        error.name === "AxiosError" &&
+        error.response.statusText === "Unauthorized"
+      ) {
+        //계정이 있는데 비밀번호가 잘못된 경우
+        const type = "password";
+        serverMsg = "비밀번호가 일치하지 않습니다.";
+        setAlert((prevAlert) => ({
+          ...prevAlert,
+          [type]: serverMsg,
+        }));
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,8 +129,12 @@ const Signin = () => {
         ></input>
         <div className="valid-msg">{password && alert.password}</div>
 
-        <button type="submit" data-testid="singin-button">
-          로그인
+        <button
+          type="submit"
+          data-testid="singin-button"
+          className={isLoading ? "loading" : undefined}
+        >
+          <span>로그인</span>
         </button>
       </form>
       <div className="bottom">

@@ -1,19 +1,22 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import Shimmer from "./Shimmer";
 
 const List = styled.li`
   padding: 0.8rem 0.5rem;
   background-color: ${(props) =>
     props.isEdit ? "#bd84f6" : props.isCompleted ? "#9c0dd96f" : "whitesmoke"};
   opacity: ${(props) =>
-    props.isCompleted && !props.isEdit ? "40%" : props.isEdit ? 1 : null};
+    props.isCompleted && !props.isEdit ? 0.4 : props.isEdit ? 1 : null};
   border-radius: 0.5rem;
   display: flex;
+  opacity: ${(props) => (props.isLoading ? 0.5 : null)};
   box-shadow: 0px 1px 3px lightgray;
   justify-content: space-between;
   transition: all 0.2s ease-in-out;
-
+  position: relative;
+  filter: ${(props) => (props.isLoading ? "blur(0.5px)" : null)};
   cursor: pointer;
   & + & {
     margin-top: 0.4rem;
@@ -70,8 +73,9 @@ const List = styled.li`
   }
 `;
 
-const Item = ({ todo, deleteTodo, setTodos }) => {
+const Item = ({ todo, setTodos, setServerFail }) => {
   const [isEdit, setIsEdit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [modifiedTodo, setModifiedTodo] = useState(todo);
   const inputRef = useRef(null);
 
@@ -95,6 +99,7 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
     e.stopPropagation();
     e.preventDefault();
     try {
+      setIsLoading(true);
       const result = await axios.put(
         `${process.env.REACT_APP_WAS}/todos/${id}`,
         {
@@ -120,11 +125,17 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
       }
     } catch (error) {
       console.log(error);
+      if (error.message === "Network Error" && error.name === "AxiosError") {
+        setServerFail(true);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const toggleTodo = async (id) => {
     try {
+      setIsLoading(true);
       console.log(modifiedTodo);
       const result = await axios.put(
         `${process.env.REACT_APP_WAS}/todos/${id}`,
@@ -151,6 +162,39 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
       }
     } catch (error) {
       console.log(error);
+      if (error.message === "Network Error" && error.name === "AxiosError") {
+        setServerFail(true);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTodo = async (id) => {
+    try {
+      setIsLoading(true);
+      const result = await axios.delete(
+        `${process.env.REACT_APP_WAS}/todos/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+
+      const { status, statusText } = result;
+      if (status === 204 && statusText === "No Content") {
+        setTodos((prevTodos) => {
+          return prevTodos.filter((todo) => todo.id !== id);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.message === "Network Error" && error.name === "AxiosError") {
+        setServerFail(true);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -161,7 +205,12 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
   }, [isEdit]);
 
   return (
-    <List isEdit={isEdit} isCompleted={modifiedTodo.isCompleted} key={todo.id}>
+    <List
+      key={todo.id}
+      isEdit={isEdit}
+      isCompleted={modifiedTodo.isCompleted}
+      isLoading={isLoading}
+    >
       {isEdit ? (
         <>
           <form onSubmit={(e) => onSubmitHandler(e, todo.id)}>
@@ -178,6 +227,7 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
               <input
                 ref={inputRef}
                 type="text"
+                spellCheck="false"
                 data-testid="modify-input"
                 onChange={(e) => {
                   e.stopPropagation();
@@ -231,6 +281,7 @@ const Item = ({ todo, deleteTodo, setTodos }) => {
           </span>
         </>
       )}
+      {isLoading && <Shimmer />}
     </List>
   );
 };
