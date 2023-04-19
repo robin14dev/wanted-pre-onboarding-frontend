@@ -31,21 +31,18 @@ export default function Signin({ setAuthState }: SigninProps) {
         navigate("/todo");
       }
     } catch (error) {
-      console.log(error);
       let errorMessage = "";
       if (error instanceof AxiosError && error.response?.status === 404) {
         console.log(error.response?.data);
         errorMessage =
           error.response?.data.message || "해당 사용자가 존재하지 않습니다.";
         setOnError(errorMessage);
-        console.log("rere");
         return;
       }
 
       if (error instanceof AxiosError && error.response?.status === 401) {
         errorMessage = "비밀번호가 일치하지 않습니다.";
         setOnError(errorMessage);
-        console.log("rere");
         return;
       }
     } finally {

@@ -20,6 +20,33 @@ const Wrapper = styled.form`
   border-radius: 2rem;
   padding: 2rem;
 
+  .title {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    .bluebox {
+      color: white;
+      margin: 0 0.5rem;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+      background-color: var(--mainBlue);
+    }
+    .highlight {
+      color: var(--mainBlue);
+      border-bottom: 2px solid;
+      margin: 0 0.2rem;
+      cursor: default;
+    }
+    h1 {
+      color: var(--mainBlue);
+    }
+    h1,
+    h2 {
+      margin: 0;
+    }
+  }
+
   input {
     height: 2rem;
     border: 1px solid lightgray;
@@ -31,13 +58,13 @@ const Wrapper = styled.form`
     transition: background-color 0.5s;
     margin-top: 1rem;
     width: 100%;
-    background-color: #9343e1;
+    background-color: var(--mainBlue);
     color: white;
     height: 2rem;
     border-radius: 0.2rem;
     font-weight: 600;
     &:disabled {
-      background-color: #9243e1aa;
+      background-color: lightgray;
     }
     position: relative;
   }
@@ -46,6 +73,21 @@ const Wrapper = styled.form`
     height: 1rem;
     margin: 0.2rem 0;
     font-size: 0.8rem;
+  }
+
+  .err-msg {
+    height: 0.9rem;
+    font-size: 0.8rem;
+  }
+
+  .change {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    a {
+      margin-left: 1rem;
+    }
   }
 `;
 
@@ -68,12 +110,6 @@ export default function Form({
   if (isError !== onError) {
     setIsError(onError);
   }
-
-  // if (isError) {
-  //   console.log("error!!", inputEmailRef.current);
-
-  //   inputEmailRef.current && inputEmailRef.current.focus();
-  // }
 
   const { email, password } = form;
 
@@ -101,6 +137,10 @@ export default function Form({
 
   return (
     <Wrapper onSubmit={submitHandler}>
+      <div className="title">
+        <h1>Wanted</h1>
+        <h2>pre-onboarding</h2>
+      </div>
       <input
         placeholder="이메일을 입력해 주세요"
         type="text"
@@ -111,6 +151,7 @@ export default function Form({
         ref={inputEmailRef}
         spellCheck="false"
         disabled={isLoading}
+        autoFocus={true}
       />
       <div className="valid-msg">
         {email && isChecking && !isValid.email && message.email}
@@ -136,7 +177,7 @@ export default function Form({
         {type === "signin" ? "로그인" : "회원가입"}
       </button>
 
-      <div>
+      <div className="change">
         <p>
           {type === "signin"
             ? "아직 회원이 아니신가요?"

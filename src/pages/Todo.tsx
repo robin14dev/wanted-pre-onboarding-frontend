@@ -22,6 +22,10 @@ const TodoList = styled.ul`
   flex-direction: column-reverse;
   padding: 0;
   min-width: 20rem;
+
+  p {
+    text-align: center;
+  }
 `;
 export default function Todo({}: Props) {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -111,28 +115,22 @@ export default function Todo({}: Props) {
   //     </Wrapper>
   //   );
 
-  if (todos.length === 0)
-    return (
-      <Wrapper>
-        <TodoWrite todoReducer={todosReducer} />
-        할일을 추가해 주세요
-      </Wrapper>
-    );
-
   return (
     <Wrapper>
       <TodoWrite todoReducer={todosReducer} />
       <TodoList>
-        {todos.length === 0
-          ? "할일을 추가해 주세요"
-          : todos.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                todosReducer={todosReducer}
-                setTodos={setTodos}
-              />
-            ))}
+        {todos.length === 0 ? (
+          <p>할일을 추가해 주세요</p>
+        ) : (
+          todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              todosReducer={todosReducer}
+              setTodos={setTodos}
+            />
+          ))
+        )}
       </TodoList>
     </Wrapper>
   );

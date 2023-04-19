@@ -4,12 +4,6 @@ import { AxiosError } from "axios";
 import Form from "../utils/Form";
 import { axiosCustom } from "../api/customAPI";
 
-// if (localStorage.getItem("access_token")) {
-//   window.history.replaceState("", "", "/todo");
-// }
-
-console.log("Signup!!");
-
 export default function Signup() {
   const navigate = useNavigate();
 
@@ -28,13 +22,10 @@ export default function Signup() {
         navigate("/signin");
       }
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError && error.response?.status === 400) {
-        console.log(error.response?.data);
         const errorMessage =
           error.response?.data.message || "동일한 이메일이 이미 존재합니다.";
         setOnError(errorMessage);
-        console.log("rere");
       }
     } finally {
       setIsLoading(false);
