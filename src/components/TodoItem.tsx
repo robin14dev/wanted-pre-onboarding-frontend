@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { axiosCustom } from "../api/customAPI";
 import styled from "styled-components";
+import Shimmer from "../utils/Shimmer";
 type Props = {
-  todosReducer: TodoReducer;
   todo: Todo;
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 };
 
 const StyledLi = styled.li`
+  position: relative;
+  overflow: hidden;
   background-color: #f6f6f6;
   border-radius: 0.5rem;
   padding: 0.5rem;
@@ -48,11 +50,12 @@ const StyledLi = styled.li`
   }
 `;
 
-export default function TodoItem({ todo, setTodos, todosReducer }: Props) {
+export default function TodoItem({ todo, setTodos }: Props) {
   const [item] = useState(todo);
   const text = item.todo;
   const [isEdit, setIsEdit] = useState(false);
   const [editText, setEditText] = useState(text);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nextItem = Object.assign(item, { isCompleted: e.target.checked });
@@ -67,13 +70,14 @@ export default function TodoItem({ todo, setTodos, todosReducer }: Props) {
     setEditText(text);
   };
   const deleteHandler = () => {
-    todosReducer("DELETE", item.id);
+    deleteTodo(item.id);
   };
 
   const updateTodo = async (item: Todo) => {
     try {
       const access_token = localStorage.getItem("access_token");
       if (!access_token) return;
+      setIsLoading(true);
       const updateRes = await axiosCustom.put(
         `/todos/${item.id}`,
         {
@@ -93,6 +97,25 @@ export default function TodoItem({ todo, setTodos, todosReducer }: Props) {
       return;
     } catch (error) {
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTodo = async (id: number) => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+      if (!access_token) return;
+      setIsLoading(true);
+      const deleteRes = await axiosCustom.delete(`/todos/${id}`, {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      if (deleteRes.status === 204) {
+        setTodos((prev) => prev.filter((todo) => todo.id !== Number(id)));
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,6 +137,7 @@ export default function TodoItem({ todo, setTodos, todosReducer }: Props) {
             spellCheck="false"
           />
           <button
+            disabled={isLoading}
             data-testid="submit-button"
             onClick={() => modifyHandler(item)}
           >
@@ -133,14 +157,23 @@ export default function TodoItem({ todo, setTodos, todosReducer }: Props) {
             />
             <span>{text}</span>
           </label>
-          <button data-testid="modify-button" onClick={() => setIsEdit(true)}>
+          <button
+            disabled={isLoading}
+            data-testid="modify-button"
+            onClick={() => setIsEdit(true)}
+          >
             수정
           </button>
-          <button data-testid="delete-button" onClick={deleteHandler}>
+          <button
+            disabled={isLoading}
+            data-testid="delete-button"
+            onClick={deleteHandler}
+          >
             삭제
           </button>
         </>
       )}
+      {isLoading && <Shimmer />}
     </StyledLi>
   );
 }

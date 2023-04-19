@@ -68,6 +68,40 @@ const Wrapper = styled.form`
     }
     position: relative;
   }
+  .loading {
+    position: relative;
+    span {
+      visibility: hidden;
+      opacity: 0.5;
+      transition: all 0.2s;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 1rem;
+      height: 1rem;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 4px solid lightgray;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: button-loading-spinner 1s ease infinite;
+    }
+
+    @keyframes button-loading-spinner {
+      from {
+        transform: rotate(0turn);
+      }
+
+      to {
+        transform: rotate(1turn);
+      }
+    }
+  }
 
   .valid-msg {
     height: 1rem;
@@ -173,8 +207,9 @@ export default function Form({
         type="submit"
         data-testid={`${type}-button`}
         disabled={!isValid.email || !isValid.password || isLoading}
+        className={isLoading ? "loading" : undefined}
       >
-        {type === "signin" ? "로그인" : "회원가입"}
+        {isLoading ? "" : type === "signin" ? "로그인" : "회원가입"}
       </button>
 
       <div className="change">
