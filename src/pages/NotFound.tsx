@@ -1,8 +1,5 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
-type Props = {};
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,7 +44,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function NotFound({}: Props) {
+export default function NotFound() {
   return (
     <Wrapper>
       <h1>
