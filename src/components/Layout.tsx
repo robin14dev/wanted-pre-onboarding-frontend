@@ -9,7 +9,7 @@ export default function Layout({ children }: Props) {
   if (
     (window.location.pathname === "/signup" ||
       window.location.pathname === "/signin") &&
-    localStorage.getItem("accessToken")
+    localStorage.getItem("access_token")
   ) {
     console.log("redirect!!");
 
@@ -19,7 +19,7 @@ export default function Layout({ children }: Props) {
 
   if (
     window.location.pathname === "/todo" &&
-    !localStorage.getItem("accessToken")
+    !localStorage.getItem("access_token")
   ) {
     redirect("signin");
     return <>로그인 페이지로 이동</>;

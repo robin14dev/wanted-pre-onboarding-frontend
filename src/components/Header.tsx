@@ -15,6 +15,10 @@ const Wrapper = styled.header`
   button {
     color: white;
   }
+
+  button {
+    margin-left: 1rem;
+  }
 `;
 
 type Props = {
@@ -25,18 +29,21 @@ console.log("Header");
 
 export default function Header({ authState }: Props) {
   const signout = () => {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("access_token");
     window.location.replace("/");
   };
   return (
     <Wrapper>
-      <Link to={"/"}>Header</Link>
+      <Link to={"/"}>Home</Link>
       <ul>
         <li>
           {!authState ? (
             <Link to={"signin"}>로그인</Link>
           ) : (
-            <button onClick={signout}>로그아웃</button>
+            <>
+              <Link to={"todo"}>Todo</Link>
+              <button onClick={signout}>로그아웃</button>
+            </>
           )}
         </li>
       </ul>
