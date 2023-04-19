@@ -15,6 +15,10 @@ const Wrapper = styled.header`
   button {
     color: white;
   }
+
+  button {
+    margin-left: 1rem;
+  }
 `;
 
 type Props = {
@@ -30,13 +34,16 @@ export default function Header({ authState }: Props) {
   };
   return (
     <Wrapper>
-      <Link to={"/"}>Header</Link>
+      <Link to={"/"}>Home</Link>
       <ul>
         <li>
           {!authState ? (
             <Link to={"signin"}>로그인</Link>
           ) : (
-            <button onClick={signout}>로그아웃</button>
+            <>
+              <Link to={"todo"}>Todo</Link>
+              <button onClick={signout}>로그아웃</button>
+            </>
           )}
         </li>
       </ul>

@@ -4,3 +4,8 @@ type Todo = {
   todo: string;
   isCompleted: boolean;
 };
+
+type TodoReducer = (
+  type: "ADD" | "UPDATE" | "DELETE",
+  payload: Todo | string | number
+) => Promise<void>;
