@@ -26,7 +26,7 @@ export default function Signin({ setAuthState }: SigninProps) {
       });
       console.log(loginRes);
       if (loginRes.status === 200) {
-        localStorage.setItem("accessToken", loginRes.data.access_token);
+        localStorage.setItem("access_token", loginRes.data.access_token);
         setAuthState(true);
         navigate("/todo");
       }
@@ -54,8 +54,8 @@ export default function Signin({ setAuthState }: SigninProps) {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
       navigate("/todo");
     }
   }, [navigate]);

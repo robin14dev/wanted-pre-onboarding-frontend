@@ -25,7 +25,7 @@ console.log("Header");
 
 export default function Header({ authState }: Props) {
   const signout = () => {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("access_token");
     window.location.replace("/");
   };
   return (

@@ -3,9 +3,9 @@ import "./App.css";
 import Header from "./components/Header";
 import { useEffect, useState } from "react";
 import NotFound from "./components/NotFound";
-import Signup from "./components/Signup";
-import Signin from "./components/Signin";
-import Todo from "./components/Todo";
+import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+import Todo from "./pages/Todo";
 import {
   createBrowserRouter,
   redirect,
@@ -56,8 +56,8 @@ function App() {
   const [authState, setAuthState] = useState(false);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
       setAuthState(true);
     }
   }, [authState]);

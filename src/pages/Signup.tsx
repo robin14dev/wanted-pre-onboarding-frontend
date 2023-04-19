@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import Form from "../utils/Form";
 import { axiosCustom } from "../api/customAPI";
 
-// if (localStorage.getItem("accessToken")) {
+// if (localStorage.getItem("access_token")) {
 //   window.history.replaceState("", "", "/todo");
 // }
 
@@ -42,8 +42,8 @@ export default function Signup() {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
       navigate("/todo");
     }
   }, [navigate]);
